@@ -19,6 +19,9 @@ package org.jboss.as.quickstarts.mdb;
 import java.util.logging.Logger;
 import javax.ejb.ActivationConfigProperty;
 import javax.ejb.MessageDriven;
+import javax.inject.Inject;
+import javax.jms.JMSConsumer;
+import javax.jms.JMSContext;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageListener;
@@ -34,11 +37,14 @@ import javax.jms.TextMessage;
  */
 @MessageDriven(name = "HelloWorldQTopicMDB", activationConfig = {
         @ActivationConfigProperty(propertyName = "destinationType", propertyValue = "javax.jms.Topic"),
-        @ActivationConfigProperty(propertyName = "destination", propertyValue = "topic/HELLOWORLDMDBTopic"),
+        @ActivationConfigProperty(propertyName = "destinationLookup", propertyValue = "topic/HELLOWORLDMDBTopic"),
         @ActivationConfigProperty(propertyName = "acknowledgeMode", propertyValue = "Auto-acknowledge") })
 public class HelloWorldTopicMDB implements MessageListener {
 
     private final static Logger LOGGER = Logger.getLogger(HelloWorldTopicMDB.class.toString());
+
+    @Inject
+    JMSContext context;
 
     /**
      * @see MessageListener#onMessage(Message)
@@ -49,6 +55,8 @@ public class HelloWorldTopicMDB implements MessageListener {
             if (rcvMessage instanceof TextMessage) {
                 msg = (TextMessage) rcvMessage;
                 LOGGER.info("Received Message from topic: " + msg.getText());
+                context.createProducer().send(msg.getJMSReplyTo(), msg.getText());
+                LOGGER.info("Replied to " + msg.getJMSReplyTo());
             } else {
                 LOGGER.warning("Message of wrong type: " + rcvMessage.getClass().getName());
             }

@@ -22,8 +22,10 @@ import java.io.PrintWriter;
 import javax.annotation.Resource;
 import javax.inject.Inject;
 import javax.jms.Destination;
+import javax.jms.JMSConsumer;
 import javax.jms.JMSContext;
 import javax.jms.Queue;
+import javax.jms.TemporaryQueue;
 import javax.jms.Topic;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -72,14 +74,28 @@ public class HelloWorldMDBServletClient extends HttpServlet {
             } else {
                 destination = queue;
             }
+
+            // create a temporary queue to receive the replies from the MDB
+            TemporaryQueue temporaryQueue = context.createTemporaryQueue();
+
             out.write("<p>Sending messages to <em>" + destination + "</em></p>");
             out.write("<h2>Following messages will be send to the destination:</h2>");
             for (int i = 0; i < MSG_COUNT; i++) {
                 String text = "This is message " + (i + 1);
-                context.createProducer().send(destination, text);
-                out.write("Message (" + i + "): " + text + "</br>");
+                context.createProducer().setJMSReplyTo(temporaryQueue)
+                        .send(destination, text);
+                out.write("Message (" + i + "): " + text + "<br>");
             }
-            out.write("<p><i>Go to your WildFly Server console or Server log to see the result of messages processing</i></p>");
+
+            out.write("<br><h2>Received replies from the temporary queue:</h2>");
+            JMSConsumer consumer = context.createConsumer(temporaryQueue);
+            String reply;
+            do {
+                reply = consumer.receiveBody(String.class, 1000);
+                if (reply != null) {
+                    out.write(reply + "<br>");
+                }
+            } while(reply != null);
         } finally {
             if (out != null) {
                 out.close();

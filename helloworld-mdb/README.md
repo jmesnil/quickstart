@@ -73,6 +73,16 @@ The application will be running at the following URL: <http://localhost:8080/wil
 
 To send messages to the topic, use the following URL: <http://localhost:8080/wildfly-helloworld-mdb/HelloWorldMDBServletClient?topic>
 
+The Servlet will send JMS messages to either the queue or the topic and wait to receive replies on a temporary queue and display them:
+
+    Received replies from the temporary queue:
+    
+    This is message 2
+    This is message 4
+    This is message 3
+    This is message 1
+    This is message 5
+
 Investigate the Server Console Output
 -------------------------
 
