@@ -21,11 +21,18 @@ import java.io.PrintWriter;
 
 import javax.annotation.Resource;
 import javax.inject.Inject;
+import javax.jms.Connection;
+import javax.jms.ConnectionFactory;
 import javax.jms.Destination;
 import javax.jms.JMSContext;
 import javax.jms.JMSDestinationDefinition;
 import javax.jms.JMSDestinationDefinitions;
+import javax.jms.JMSException;
+import javax.jms.MessageProducer;
 import javax.jms.Queue;
+import javax.jms.QueueConnectionFactory;
+import javax.jms.Session;
+import javax.jms.TextMessage;
 import javax.jms.Topic;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -33,25 +40,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-
-/**
- * Definition of the two JMS destinations used by the quickstart
- * (one queue and one topic).
- */
-@JMSDestinationDefinitions(
-        value =  {
-                @JMSDestinationDefinition(
-                        name = "java:/queue/HELLOWORLDMDBQueue",
-                        interfaceName = "javax.jms.Queue",
-                        destinationName = "HelloWorldMDBQueue"
-                ),
-                @JMSDestinationDefinition(
-                        name = "java:/topic/HELLOWORLDMDBTopic",
-                        interfaceName = "javax.jms.Topic",
-                        destinationName = "HelloWorldMDBTopic"
-                )
-        }
-)
 
 /**
  * <p>
@@ -73,33 +61,46 @@ public class HelloWorldMDBServletClient extends HttpServlet {
 
     private static final int MSG_COUNT = 5;
 
-    @Inject
-    private JMSContext context;
+    @Resource(lookup = "java:global/tibco/QCF")
+    private QueueConnectionFactory cf;
 
-    @Resource(lookup = "java:/queue/HELLOWORLDMDBQueue")
+    @Resource(lookup = "java:global/tibco/Q1")
     private Queue queue;
-
-    @Resource(lookup = "java:/topic/HELLOWORLDMDBTopic")
-    private Topic topic;
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.setContentType("text/html");
         PrintWriter out = resp.getWriter();
         out.write("<h1>Quickstart: Example demonstrates the use of <strong>JMS 2.0</strong> and <strong>EJB 3.2 Message-Driven Bean</strong> in WildFly 8.</h1>");
+        Connection connection = null;
         try {
-            boolean useTopic = req.getParameterMap().keySet().contains("topic");
-            final Destination destination = useTopic ? topic : queue;
+            final Destination destination = queue;
+
+            System.out.println("cf = " + cf);
+
+            connection = cf.createConnection();
+            Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+            MessageProducer producer = session.createProducer(queue);
 
             out.write("<p>Sending messages to <em>" + destination + "</em></p>");
             out.write("<h2>Following messages will be send to the destination:</h2>");
             for (int i = 0; i < MSG_COUNT; i++) {
                 String text = "This is message " + (i + 1);
-                context.createProducer().send(destination, text);
+                TextMessage message = session.createTextMessage(text);
+                producer.send(message);
                 out.write("Message (" + i + "): " + text + "</br>");
             }
             out.write("<p><i>Go to your WildFly Server console or Server log to see the result of messages processing</i></p>");
+        } catch (JMSException e) {
+            e.printStackTrace();
         } finally {
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (JMSException e) {
+                    e.printStackTrace();
+                }
+            }
             if (out != null) {
                 out.close();
             }
