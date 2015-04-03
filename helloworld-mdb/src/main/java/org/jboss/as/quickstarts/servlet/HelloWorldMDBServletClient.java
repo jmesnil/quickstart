@@ -25,6 +25,7 @@ import javax.jms.Destination;
 import javax.jms.JMSContext;
 import javax.jms.JMSDestinationDefinition;
 import javax.jms.JMSDestinationDefinitions;
+import javax.jms.JMSPasswordCredential;
 import javax.jms.Queue;
 import javax.jms.Topic;
 import javax.servlet.ServletException;
@@ -74,12 +75,13 @@ public class HelloWorldMDBServletClient extends HttpServlet {
     private static final int MSG_COUNT = 5;
 
     @Inject
+    @JMSPasswordCredential(userName = "guest", password = "guest")
     private JMSContext context;
 
-    @Resource(lookup = "java:/queue/HELLOWORLDMDBQueue")
+    @Resource(lookup = "java:/activemq/queue/HELLOWORLDMDBQueue")
     private Queue queue;
 
-    @Resource(lookup = "java:/topic/HELLOWORLDMDBTopic")
+    @Resource(lookup = "java:/activemq/topic/HELLOWORLDMDBTopic")
     private Topic topic;
 
     @Override
