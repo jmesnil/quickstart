@@ -22,6 +22,8 @@ import java.io.PrintWriter;
 import javax.annotation.Resource;
 import javax.inject.Inject;
 import javax.jms.Destination;
+import javax.jms.JMSConnectionFactory;
+import javax.jms.JMSConnectionFactoryDefinition;
 import javax.jms.JMSContext;
 import javax.jms.JMSDestinationDefinition;
 import javax.jms.JMSDestinationDefinitions;
@@ -37,6 +39,10 @@ import javax.servlet.http.HttpServletResponse;
  * Definition of the two JMS destinations used by the quickstart
  * (one queue and one topic).
  */
+@JMSConnectionFactoryDefinition(
+        name = "java:/jms/myCF",
+        resourceAdapter = "wmq.jmsra"
+)
 @JMSDestinationDefinitions(
     value = {
         @JMSDestinationDefinition(
@@ -71,6 +77,7 @@ public class HelloWorldMDBServletClient extends HttpServlet {
     private static final int MSG_COUNT = 5;
 
     @Inject
+    @JMSConnectionFactory("java:/jms/myCF")
     private JMSContext context;
 
     @Resource(lookup = "java:/queue/HELLOWORLDMDBQueue")
