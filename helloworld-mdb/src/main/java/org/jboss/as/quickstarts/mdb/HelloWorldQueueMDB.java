@@ -24,6 +24,8 @@ import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.TextMessage;
 
+import org.jboss.ejb3.annotation.ResourceAdapter;
+
 /**
  * <p>
  * A simple Message Driven Bean that asynchronously receives and processes the messages that are sent to the queue.
@@ -32,8 +34,9 @@ import javax.jms.TextMessage;
  * @author Serge Pagop (spagop@redhat.com)
  *
  */
+@ResourceAdapter("wmq.jmsra.rar")
 @MessageDriven(name = "HelloWorldQueueMDB", activationConfig = {
-    @ActivationConfigProperty(propertyName = "destinationLookup", propertyValue = "queue/HELLOWORLDMDBQueue"),
+    @ActivationConfigProperty(propertyName = "destination", propertyValue = "Q2"),
     @ActivationConfigProperty(propertyName = "destinationType", propertyValue = "javax.jms.Queue"),
     @ActivationConfigProperty(propertyName = "acknowledgeMode", propertyValue = "Auto-acknowledge") })
 public class HelloWorldQueueMDB implements MessageListener {

@@ -24,11 +24,13 @@ import javax.inject.Inject;
 import javax.jms.Destination;
 import javax.jms.JMSConnectionFactory;
 import javax.jms.JMSConnectionFactoryDefinition;
+import javax.jms.JMSConnectionFactoryDefinitions;
 import javax.jms.JMSContext;
 import javax.jms.JMSDestinationDefinition;
 import javax.jms.JMSDestinationDefinitions;
 import javax.jms.Queue;
 import javax.jms.Topic;
+import javax.resource.ConnectionFactoryDefinition;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -40,22 +42,41 @@ import javax.servlet.http.HttpServletResponse;
  * (one queue and one topic).
  */
 @JMSConnectionFactoryDefinition(
-        name = "java:/jms/myCF",
-        resourceAdapter = "wmq.jmsra"
+        name = "java:/jms/myCF1",
+        interfaceName = "javax.jms.ConnectionFactory",
+        resourceAdapter = "wmq.jmsra",
+        properties = {
+                "channel=CH",
+                "hostName=10.16.88.195",
+                "transportType=CLIENT",
+                "queueManager=QM"
+        }
 )
 @JMSDestinationDefinitions(
-    value = {
-        @JMSDestinationDefinition(
-            name = "java:/queue/HELLOWORLDMDBQueue",
-            interfaceName = "javax.jms.Queue",
-            destinationName = "HelloWorldMDBQueue"
-        ),
-        @JMSDestinationDefinition(
-            name = "java:/topic/HELLOWORLDMDBTopic",
-            interfaceName = "javax.jms.Topic",
-            destinationName = "HelloWorldMDBTopic"
-        )
-    })
+        value = {
+                @JMSDestinationDefinition(
+                        name = "java:/queue/HELLOWORLDMDBQueue",
+                        interfaceName = "javax.jms.Queue",
+                        className = "com.ibm.mq.connector.outbound.MQQueueProxy",
+                        destinationName = "HelloWorldMDBQueue",
+                        resourceAdapter = "wmq.jmsra",
+                        properties = {
+                                "baseQueueName=Q2",
+                                "baseQueueManagerName=QM"
+                        }
+                ),
+                @JMSDestinationDefinition(
+                        name = "java:/topic/HELLOWORLDMDBTopic",
+                        interfaceName = "javax.jms.Topic",
+                        className = "com.ibm.mq.connector.outbound.MQTopicProxy",
+                        destinationName = "HelloWorldMDBTopic",
+                        resourceAdapter = "wmq.jmsra",
+                        properties = {
+                                "baseTopicName=T1",
+                                "brokerPubQueueManager=QM"
+                        }
+                )
+        })
 /**
  * <p>
  * A simple servlet 3 as client that sends several messages to a queue or a topic.
@@ -77,7 +98,7 @@ public class HelloWorldMDBServletClient extends HttpServlet {
     private static final int MSG_COUNT = 5;
 
     @Inject
-    @JMSConnectionFactory("java:/jms/myCF")
+    @JMSConnectionFactory("java:/jms/myCF1")
     private JMSContext context;
 
     @Resource(lookup = "java:/queue/HELLOWORLDMDBQueue")
@@ -94,6 +115,8 @@ public class HelloWorldMDBServletClient extends HttpServlet {
         try {
             boolean useTopic = req.getParameterMap().keySet().contains("topic");
             final Destination destination = useTopic ? topic : queue;
+
+            out.write("<p>" + context + "</p>");
 
             out.write("<p>Sending messages to <em>" + destination + "</em></p>");
             out.write("<h2>Following messages will be send to the destination:</h2>");
