@@ -16,7 +16,9 @@
  */
 package org.jboss.as.quickstarts.mdb;
 
+import java.util.Enumeration;
 import java.util.logging.Logger;
+
 import javax.ejb.ActivationConfigProperty;
 import javax.ejb.MessageDriven;
 import javax.jms.JMSException;
@@ -48,7 +50,14 @@ public class HelloWorldQueueMDB implements MessageListener {
         try {
             if (rcvMessage instanceof TextMessage) {
                 msg = (TextMessage) rcvMessage;
-                LOGGER.info("Received Message from queue: " + msg.getText());
+                String text = "Received Message from queue: " + msg.getText() + "\n";
+                Enumeration enumeration = msg.getPropertyNames();
+                while (enumeration.hasMoreElements()) {
+                    String name = (String) enumeration.nextElement();
+                    Object value = msg.getObjectProperty(name);
+                    text += String.format("\t%s=%s\n", name, value);
+                }
+                LOGGER.info(text);
             } else {
                 LOGGER.warning("Message of wrong type: " + rcvMessage.getClass().getName());
             }

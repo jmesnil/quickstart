@@ -25,6 +25,7 @@ import javax.jms.Destination;
 import javax.jms.JMSContext;
 import javax.jms.JMSDestinationDefinition;
 import javax.jms.JMSDestinationDefinitions;
+import javax.jms.JMSProducer;
 import javax.jms.Queue;
 import javax.jms.Topic;
 import javax.servlet.ServletException;
@@ -90,9 +91,12 @@ public class HelloWorldMDBServletClient extends HttpServlet {
 
             out.write("<p>Sending messages to <em>" + destination + "</em></p>");
             out.write("<h2>Following messages will be send to the destination:</h2>");
+            JMSProducer producer = context.createProducer()
+                    .setProperty("JMSXGroupID", "sequential")
+                    .setProperty("foo", "bar");
             for (int i = 0; i < MSG_COUNT; i++) {
                 String text = "This is message " + (i + 1);
-                context.createProducer().send(destination, text);
+                producer.setProperty("JMSXGroupSeq", i).send(destination, text);
                 out.write("Message (" + i + "): " + text + "</br>");
             }
             out.write("<p><i>Go to your WildFly Server console or Server log to see the result of messages processing</i></p>");
