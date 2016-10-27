@@ -33,7 +33,8 @@ import javax.jms.TextMessage;
  *
  */
 @MessageDriven(name = "HelloWorldQueueMDB", activationConfig = {
-    @ActivationConfigProperty(propertyName = "destinationLookup", propertyValue = "queue/HELLOWORLDMDBQueue"),
+    @ActivationConfigProperty(propertyName = "connectionFactoryLookup", propertyValue = "java:/jms/tibco/XACF"),
+    @ActivationConfigProperty(propertyName = "destinationLookup", propertyValue = "java:/jms/tibco/queue.sample"),
     @ActivationConfigProperty(propertyName = "destinationType", propertyValue = "javax.jms.Queue"),
     @ActivationConfigProperty(propertyName = "acknowledgeMode", propertyValue = "Auto-acknowledge") })
 public class HelloWorldQueueMDB implements MessageListener {
@@ -48,7 +49,7 @@ public class HelloWorldQueueMDB implements MessageListener {
         try {
             if (rcvMessage instanceof TextMessage) {
                 msg = (TextMessage) rcvMessage;
-                LOGGER.info("Received Message from queue: " + msg.getText());
+                LOGGER.info("Received Message from queue " +  msg.getJMSDestination() + " : " + msg.getText());
             } else {
                 LOGGER.warning("Message of wrong type: " + rcvMessage.getClass().getName());
             }

@@ -22,34 +22,15 @@ import java.io.PrintWriter;
 import javax.annotation.Resource;
 import javax.inject.Inject;
 import javax.jms.Destination;
+import javax.jms.JMSConnectionFactory;
 import javax.jms.JMSContext;
-import javax.jms.JMSDestinationDefinition;
-import javax.jms.JMSDestinationDefinitions;
-import javax.jms.Queue;
-import javax.jms.Topic;
+import javax.jms.JMSProducer;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-/**
- * Definition of the two JMS destinations used by the quickstart
- * (one queue and one topic).
- */
-@JMSDestinationDefinitions(
-    value = {
-        @JMSDestinationDefinition(
-            name = "java:/queue/HELLOWORLDMDBQueue",
-            interfaceName = "javax.jms.Queue",
-            destinationName = "HelloWorldMDBQueue"
-        ),
-        @JMSDestinationDefinition(
-            name = "java:/topic/HELLOWORLDMDBTopic",
-            interfaceName = "javax.jms.Topic",
-            destinationName = "HelloWorldMDBTopic"
-        )
-    })
 /**
  * <p>
  * A simple servlet 3 as client that sends several messages to a queue or a topic.
@@ -71,13 +52,11 @@ public class HelloWorldMDBServletClient extends HttpServlet {
     private static final int MSG_COUNT = 5;
 
     @Inject
+    @JMSConnectionFactory("java:/jms/CF")
     private JMSContext context;
 
-    @Resource(lookup = "java:/queue/HELLOWORLDMDBQueue")
-    private Queue queue;
-
-    @Resource(lookup = "java:/topic/HELLOWORLDMDBTopic")
-    private Topic topic;
+    @Resource(lookup = "java:/jms/tibco/queue.sample")
+    private Destination destination;
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -85,10 +64,9 @@ public class HelloWorldMDBServletClient extends HttpServlet {
         PrintWriter out = resp.getWriter();
         out.write("<h1>Quickstart: Example demonstrates the use of <strong>JMS 2.0</strong> and <strong>EJB 3.2 Message-Driven Bean</strong> in WildFly.</h1>");
         try {
-            boolean useTopic = req.getParameterMap().keySet().contains("topic");
-            final Destination destination = useTopic ? topic : queue;
+            JMSProducer producer = context.createProducer();
 
-            out.write("<p>Sending messages to <em>" + destination + "</em></p>");
+            out.write("<p>Sending messages to <em>" + destination + "</em> with producer <em>" + producer.getClass() + "</em></p>");
             out.write("<h2>Following messages will be send to the destination:</h2>");
             for (int i = 0; i < MSG_COUNT; i++) {
                 String text = "This is message " + (i + 1);
