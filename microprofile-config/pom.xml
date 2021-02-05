@@ -103,6 +103,7 @@
                               <layer>jaxrs-server</layer>
                               <layer>microprofile-platform</layer>
                           </layers>
+                          <cloud />
                       </configuration>
                       <executions>
                           <execution>
