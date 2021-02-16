@@ -80,6 +80,9 @@
         <version.server.bom>24.0.0.Beta1-SNAPSHOT</version.server.bom>
         <version.microprofile.bom>24.0.0.Beta1-SNAPSHOT</version.microprofile.bom>
 
+        <version.server.bootable-jar>23.0.0.Final</version.server.bootable-jar>
+        <version.wildfly-jar.maven.plugin>4.0.0.Final</version.wildfly-jar.maven.plugin>
+
         <!-- Versions of unmanaged dependencies -->
         <version.arquillian.angularjs.graphene>1.2.0.Beta1</version.arquillian.angularjs.graphene>
         <version.com.nimbusds.jose.jwt>5.4</version.com.nimbusds.jose.jwt>
@@ -448,6 +451,7 @@
                 <module>tasks-jsf</module>
                 <module>tasks-rs</module>
                 <module>temperature-converter</module>
+                <module>todo-backend</module>
                 <module>thread-racing</module>
                 <module>websocket-client</module>
                 <module>websocket-endpoint</module>
