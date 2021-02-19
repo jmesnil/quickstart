@@ -24,4 +24,6 @@ jobs:
     - name: GitHub Pages
       uses: crazy-max/ghaction-github-pages@v2.2.0
       with:
+        build_dir: .
+        target_branch: gh-pages
         jekyll: false
