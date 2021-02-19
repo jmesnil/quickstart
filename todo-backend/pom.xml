@@ -108,8 +108,11 @@
                             </layers>
                             <cli-sessions>
                                 <cli-session>
+                                    <!-- do not resolve expression as the CORS_ORIGIN en var -->
+                                    <!-- can be set at runtime -->
+                                    <resolve-expressions>false</resolve-expressions>
                                     <script-files>
-                                        <script>src/main/resources/scripts/filters.cli</script>
+                                        <script>src/main/resources/scripts/cors_filters.cli</script>
                                     </script-files>
                                 </cli-session>
                             </cli-sessions>
