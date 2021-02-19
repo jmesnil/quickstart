@@ -18,7 +18,13 @@ jobs:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v2
       
-    - name: asciidoctor-ghpages
-      uses: manoelcampos/asciidoctor-ghpages-action@v2
-      with:
-        asciidoctor_params: --attribute=nofooter
+    - name: Generate doc
+      run: |
+        git branch -D gh-pages || true
+        git checkout -q --orphan gh-pages master
+        mvn clean package -Pdocs
+        git rm -rf .github/
+        echo "Commiting changes to gh-pages branch"
+        git commit -m "Update asciidoc"
+        git push -f --set-upstream origin gh-pages 
+      
