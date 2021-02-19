@@ -42,7 +42,7 @@ public class ToDo {
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
     private String title;
-    private Boolean completed;
+    private Boolean completed = false;
     @Column(name = "\"order\"")
     private int order;
     private URL url;

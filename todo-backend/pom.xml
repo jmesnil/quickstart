@@ -34,6 +34,11 @@
     <name>Quickstart: Todo backend</name>
     <description>This project demonstrates how to implement a Todo-Backend application to manage ToDos</description>
 
+    <properties>
+        <version.server.bootable-jar>22.0.0.Final</version.server.bootable-jar>
+        <version.wildfly-jar.maven.plugin>3.0.0.Final</version.wildfly-jar.maven.plugin>
+    </properties>
+
     <licenses>
         <license>
             <name>Apache License, Version 2.0</name>
@@ -74,4 +79,51 @@
         <!-- Set the name of the WAR, used as the context root when the app is deployed -->
         <finalName>${project.artifactId}</finalName>
     </build>
+
+    <profiles>
+        <profile>
+            <id>bootable-jar-openshift</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.wildfly.plugins</groupId>
+                        <artifactId>wildfly-jar-maven-plugin</artifactId>
+                        <version>${version.wildfly-jar.maven.plugin}</version>
+                        <configuration>
+                            <feature-packs>
+                                <feature-pack>
+                                    <location>wildfly@maven(org.jboss.universe:community-universe)#${version.server.bootable-jar}</location>
+                                </feature-pack>
+                                <feature-pack>
+                                    <groupId>org.wildfly</groupId>
+                                    <artifactId>wildfly-datasources-galleon-pack</artifactId>
+                                    <version>1.1.0.Final</version>
+                                </feature-pack>
+                            </feature-packs>
+                            <cloud/>
+                            <layers>
+                                <layer>cloud-server</layer>
+                                <layer>postgresql-datasource</layer>
+                                <layer>ejb</layer>
+                            </layers>
+                            <cli-sessions>
+                                <cli-session>
+                                    <script-files>
+                                        <script>src/main/resources/scripts/filters.cli</script>
+                                    </script-files>
+                                </cli-session>
+                            </cli-sessions>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>package</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>
