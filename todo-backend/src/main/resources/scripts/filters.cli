@@ -1,7 +1,7 @@
 echo Adding Undertow Filters for CORS
 # Access-Control-Allow-Origin
 /subsystem=undertow/server=default-server/host=default-host/filter-ref="Access-Control-Allow-Origin":add()
-/subsystem=undertow/configuration=filter/response-header="Access-Control-Allow-Origin":add(header-name="Access-Control-Allow-Origin",header-value="${env.CORS_ORIGIN:*")
+/subsystem=undertow/configuration=filter/response-header="Access-Control-Allow-Origin":add(header-name="Access-Control-Allow-Origin",header-value="${env.CORS_ORIGIN:*}")
 # Access-Control-Allow-Methods
 /subsystem=undertow/server=default-server/host=default-host/filter-ref="Access-Control-Allow-Methods":add()
 /subsystem=undertow/configuration=filter/response-header="Access-Control-Allow-Methods":add(header-name="Access-Control-Allow-Methods",header-value="GET, POST, OPTION, PUT, DELETE, PATCH")
