@@ -22,8 +22,6 @@ jobs:
       run: |
         mvn clean package -Pdocs
     - name: GitHub Pages
-      uses: crazy-max/ghaction-github-pages@v2.2.0
+      uses: uses: peaceiris/actions-github-pages@v3.1.12
       with:
-        build_dir: .
-        target_branch: gh-pages
-        jekyll: false
+        publish_dir: .
