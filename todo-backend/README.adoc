@@ -1,8 +1,11 @@
-include::../shared-doc/attributes.adoc[]
-
 = todo-backend: quickstart for backend deployment on OpenShift
-:level: Intermediate
-:technologies: JPA, JAX-RS, OpenShift, Galleon
+:toc:               left
+:icons:             font
+:idprefix:
+:idseparator:       -
+:keywords:          openshift,galleon,helm
+:level:             Intermediate
+:technologies:      JPA, JAX-RS, OpenShift, Galleon
 
 [abstract]
 The `todo-backend` quickstart demonstrates how to implement a backend that exposes a Rest API with JAX-RS
