@@ -20,11 +20,8 @@ jobs:
       
     - name: Generate doc
       run: |
-        git branch -D gh-pages || true
-        git checkout -q --orphan gh-pages master
         mvn clean package -Pdocs
-        git rm -rf .github/
-        echo "Commiting changes to gh-pages branch"
-        git commit -m "Update asciidoc"
-        git push -f --set-upstream origin gh-pages 
-      
+    - name: GitHub Pages
+      uses: crazy-max/ghaction-github-pages@v2.2.0
+      with:
+        jekyll: false
