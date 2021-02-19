@@ -111,7 +111,7 @@ This will create a PostgreSQL database named `todos` on OpenShift that can be ac
 We don't need to copy the credentials to connect to the database as we will retrieve them later using the `todos-db` secret that was created
 when the database was deployed.
 
-== Deploy the backend on OpenShift
+=== Deploy the backend on OpenShift
 
 The backend will be deployed on OpenShift with a Helm Chart for WildFly.
 
@@ -162,7 +162,7 @@ deploy:
 When the application is deployed, the value for the `POSTGRESQL_PASSWORD` will be taken from the key `database-password`
 in the secrets `todos-db`.
 
-=== Use the ToDo application
+=== Use the todobackend Web application
 
 Once the backend is deployed on OpenShift, it can be accessed from the route `todo-backend`.
 Let's find the host that we can use to connect to this backend:
@@ -183,9 +183,9 @@ Make sure to prepend the host with `https://` to be able to connect to the backe
 We can verify that this application is properly working as a ToDo Backend by running its https://todobackend.com/specs/index.html[specs] on it.
 
 
-Once all tests passed, we can use the https://todobackend.com/client/index.html[ToDo Backend client] to have a Web application connected to the backend.
+Once all tests passed, we can use the https://todobackend.com/client/index.html[todobackend client] to have a Web application connected to the backend.
 
-## Clean up
+=== Clean up
 
 The backend can be deleted from OpenShift by running the command:
 
