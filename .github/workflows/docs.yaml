@@ -22,10 +22,6 @@ jobs:
     - name: Generate doc
       run: |
         mvn clean package -Pdocs
-    - name: GitHub Pages v3
-      uses: peaceiris/actions-github-pages@v3.1.12
-      with:
-       publish_dir: master_peaceiris
     - name: GitHub Pages Publisher
       uses: malept/github-action-gh-pages@v1.3.0
       with:
