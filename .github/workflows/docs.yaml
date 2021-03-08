@@ -21,6 +21,7 @@ jobs:
       
     - name: Generate doc
       run: |
+        rm -rf */src
         mvn clean package -Pdocs
     - name: GitHub Pages Publisher
       uses: malept/github-action-gh-pages@v1.3.0
