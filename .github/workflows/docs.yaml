@@ -22,11 +22,16 @@ jobs:
     - name: Generate doc
       run: |
         mvn clean package -Pdocs
-    - name: GitHub Pages
-      uses: crazy-max/ghaction-github-pages@v2.2.0
-      env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: GitHub Pages v3
+      uses: peaceiris/actions-github-pages@v3.1.12
       with:
-        target_branch: gh-pages
-        build_dir: .
-        jekyll: false
+       publish_dir: master_peaceiris
+    - name: GitHub Pages Publisher
+      uses: malept/github-action-gh-pages@v1.3.0
+      with:
+        docsPath: "."
+        publishBranch: gh-pages
+        showUnderscoreFiles: false
+        versionDocs: master_malept
+
+
