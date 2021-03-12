@@ -25,7 +25,7 @@
         Maintain separation between the artifact id and the version to help prevent
         merge conflicts between commits changing the GA and those changing the V.
         -->
-        <version>23.0.0.Beta1-SNAPSHOT</version>
+        <version>24.0.0.Beta1-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -33,11 +33,6 @@
     <packaging>war</packaging>
     <name>Quickstart: Todo backend</name>
     <description>This project demonstrates how to implement a Todo-Backend application to manage ToDos</description>
-
-    <properties>
-        <version.server.bootable-jar>22.0.0.Final</version.server.bootable-jar>
-        <version.wildfly-jar.maven.plugin>3.0.0.Final</version.wildfly-jar.maven.plugin>
-    </properties>
 
     <licenses>
         <license>
@@ -97,7 +92,7 @@
                                 <feature-pack>
                                     <groupId>org.wildfly</groupId>
                                     <artifactId>wildfly-datasources-galleon-pack</artifactId>
-                                    <version>1.1.0.Final</version>
+                                    <version>1.2.3.Final</version>
                                 </feature-pack>
                             </feature-packs>
                             <cloud/>
@@ -112,7 +107,7 @@
                                     <!-- can be set at runtime -->
                                     <resolve-expressions>false</resolve-expressions>
                                     <script-files>
-                                        <script>src/main/resources/scripts/cors_filters.cli</script>
+                                        <script>${project.build.scriptSourceDirectory}/cors_filters.cli</script>
                                     </script-files>
                                 </cli-session>
                             </cli-sessions>

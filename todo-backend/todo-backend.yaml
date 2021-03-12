@@ -1,3 +1,5 @@
+# This configuration file can be used to build and deploy the todo-backend
+# quickstart on OpenShift with the Helm Chart for WildFly.
 build:
   uri: https://github.com/jmesnil/quickstart.git
   ref: todo-backend
@@ -6,7 +8,7 @@ build:
     - name: ARTIFACT_DIR
       value: todo-backend/target
     - name: MAVEN_ARGS_APPEND
-      value: -am -pl todo-backend -P bootable-jar-openshift -Dversion.server.bom=22.0.0.Final -Dversion.microprofile.bom=22.0.0.Final
+      value: -am -pl todo-backend -P bootable-jar-openshift -Dversion.server.bom=23.0.0.Final -Dversion.microprofile.bom=23.0.0.Final
     - name: MAVEN_OPTS
       value: '-XX:MetaspaceSize=96m -XX:MaxMetaspaceSize=256m'
 deploy:

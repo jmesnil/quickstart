@@ -22,7 +22,22 @@ to manage a list of ToDo which are persisted in a database with JPA.
 * The backend exposes a REST API to manage a list of todos that complies with the specs defined at https://todobackend.com/specs/index.html[todobackend.com].
 * It requires a connection to a PostgreSQL database to persist the todos.
 
+== Architecture
+
+// System Requirements
+include::../shared-doc/system-requirements.adoc[leveloffset=+1]
+
 This backend is deployed using Bootable Jar.
+
+=== Connection to the PostgreSQL database
+
+* TBD
+* mention wildfly-datasources-feature-pack and the env vars
+
+=== CORS Filters
+
+* TBD
+* Mention the CORS filters and the src/main/resources/scripts/cors_filters.cli script
 
 == Package the quickstart
 
@@ -80,7 +95,7 @@ $ curl http://localhost:8080
 [{"completed":false,"id":1,"order":0,"title":"Hello, WildFly!","url":"https://localhost:8080/1"}
 ----
 
-== Run the backend on OpenShift
+== Run the Backend on OpenShift
 
 === Prerequisites
 
@@ -91,14 +106,14 @@ Once you have installed Helm, you need to add the repository that provides Helm 
 
 [source,options="nowrap"]
 ----
-$ helm repo add wildfly https://jmesnil.github.io/wildfly-charts
+$ helm repo add wildfly https://docs.wildfly.org/wildfly-charts/
 "wildfly" has been added to your repositories
 $ helm search repo wildfly
 NAME                    CHART VERSION   APP VERSION     DESCRIPTION
-wildfly/wildfly         0.9.5           22.0            Build and Deploy WildFly applications on OpenShift
+wildfly/wildfly         1.1.0           22.0            Build and Deploy WildFly applications on OpenShift
 ----
 
-=== Deploy PostGreSQL database on OpenShift
+=== Deploy a PostGreSQL Database on OpenShift
 
 [source,options="nowrap"]
 ----
@@ -111,9 +126,9 @@ This will create a PostgreSQL database named `todos` on OpenShift that can be ac
 We don't need to copy the credentials to connect to the database as we will retrieve them later using the `todos-db` secret that was created
 when the database was deployed.
 
-=== Deploy the backend on OpenShift
+=== Build and Deploy the Backend on OpenShift
 
-The backend will be deployed on OpenShift with a Helm Chart for WildFly.
+The backend will be built and deployed on OpenShift with a Helm Chart for WildFly.
 
 [source,options="nowrap"]
 ----
@@ -175,7 +190,7 @@ todo-backend-jmesnil1-dev.apps.sandbox.x8i5.p1.openshiftapps.com
 
 This value will be different for every installation of the backend.
 
-[NOTE]
+[WARNING]
 ====
 Make sure to prepend the host with `https://` to be able to connect to the backend from the ToDo Backend Specs or Client
 ====
@@ -187,10 +202,26 @@ Once all tests passed, we can use the https://todobackend.com/client/index.html[
 
 === Clean up
 
+==== Remove the Backend
+
 The backend can be deleted from OpenShift by running the command:
 
 [source,options="nowrap"]
 ----
 $ helm delete todo-backend
 release "todo-backend" uninstalled
+----
+
+==== Remove the Database
+
+The PostresSQL database can be deleted from OpenShift by running the commands:
+
+[source,options="nowrap"]
+----
+$ oc delete all -l template=postgresql-ephemeral-template
+replicationcontroller "todos-db-1" deleted
+service "todos-db" deleted
+deploymentconfig.apps.openshift.io "todos-db" deleted
+$ oc delete secret todos-db
+secret "todos-db" deleted
 ----
