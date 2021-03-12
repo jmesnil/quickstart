@@ -12,15 +12,18 @@ The `todo-backend` quickstart demonstrates how to implement a backend that expos
 to manage a list of ToDo which are persisted in a database with JPA.
 
 This quickstart shows how to setup a local deployment of this backend as well as a deployment on OpenShift to connect
-to a PostgreSQL database also hosted on OpenShift
+to a PostgreSQL database also hosted on OpenShift.
+
 
 == What is it?
 
-The `tasks-rs` quickstart demonstrates how to implement  a backend that exposes a Rest API with JAX-RS
-to manage a list of ToDo which are persisted in a database with JPA.
+The `todo-back` quickstart demonstrates how to implement a backend that exposes a Rest API with `JAX-RS`
+to manage a list of ToDo which are persisted in a database with `JPA`.
 
 * The backend exposes a REST API to manage a list of todos that complies with the specs defined at https://todobackend.com/specs/index.html[todobackend.com].
 * It requires a connection to a PostgreSQL database to persist the todos.
+* It uses the Bootable Jar for local and cloud deployment
+* It is deployed on OpenShift using the https://docs.wildfly.org/wildfly-charts/[Helm Chart for WildFly].
 
 == Architecture
 
