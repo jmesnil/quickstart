@@ -16,7 +16,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Setup and Build
-        uses: redhat-actions/s2i-build@v1.1
+        uses: redhat-actions/s2i-build@v1.1.1
         with:
           path_context: '.'
           builder_image: 'registry.access.redhat.com/ubi8/openjdk-11'
