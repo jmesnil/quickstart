@@ -1,0 +1,38 @@
+name: "Bootable Jar Image for todo-backend quickstart"
+
+env:
+  IMAGE_NAME: todo-backend
+  IMAGE_TAG: latest
+
+on:
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup and Build
+        uses: redhat-actions/s2i-build@v1
+        with:
+          path_context: '.'
+          builder_image: 'registry.access.redhat.com/ubi8/openjdk-11'
+          image_name: ${{ env.IMAGE_NAME }}
+          image_tag: ${{ env.IMAGE_TAG }}
+          env:
+            - ARTIFACT_DIR=todo-backend/target
+            - MAVEN_ARGS_APPEND="-am -pl todo-backend -P bootable-jar-openshift -Dversion.server.bom=23.0.0.Final -Dversion.microprofile.bom=23.0.0.Final"
+            - MAVEN_OPTS="-XX:MetaspaceSize=96m -XX:MaxMetaspaceSize=256m"
+
+      # Push Image to Quay registry
+      - name: Push To Quay Action
+        uses: redhat-actions/push-to-registry@v1
+        with:
+          image: ${{ env.IMAGE_NAME }}
+          tag: ${{ env.IMAGE_TAG }}
+          registry: quay.io/${{ secrets.QUAY_USERNAME }}
+          username: ${{ secrets.QUAY_USERNAME }}
+          password: ${{ secrets.QUAY_PASSWORD }}
