@@ -22,7 +22,7 @@ jobs:
           builder_image: 'registry.access.redhat.com/ubi8/openjdk-11'
           image_name: ${{ env.IMAGE_NAME }}
           image_tag: ${{ env.IMAGE_TAG }}
-          env: ARTIFACT_DIR=todo-backend/target, MAVEN_ARGS_APPEND="-am -pl todo-backend -P bootable-jar-openshift -Dversion.server.bom=23.0.0.Final -Dversion.microprofile.bom=23.0.0.Final", MAVEN_OPTS="-XX:MetaspaceSize=96m -XX:MaxMetaspaceSize=256m"
+          env_vars: ARTIFACT_DIR=todo-backend/target, MAVEN_ARGS_APPEND="-am -pl todo-backend -P bootable-jar-openshift -Dversion.server.bom=23.0.0.Final -Dversion.microprofile.bom=23.0.0.Final", MAVEN_OPTS="-XX:MetaspaceSize=96m -XX:MaxMetaspaceSize=256m"
 
       # Push Image to Quay registry
       - name: Push To Quay Action
