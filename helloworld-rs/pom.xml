@@ -19,17 +19,16 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>org.wildfly.quickstarts</groupId>
-        <artifactId>quickstart-parent</artifactId>
-        <!--
-        Maintain separation between the artifact id and the version to help prevent
-        merge conflicts between commits changing the GA and those changing the V.
-        -->
-        <version>25.0.0.Beta1-SNAPSHOT</version>
-        <relativePath>../pom.xml</relativePath>
+        <groupId>org.jboss</groupId>
+        <artifactId>jboss-parent</artifactId>
+        <version>37</version>
     </parent>
+
+    <groupId>org.wildfly.quickstarts</groupId>
     <artifactId>helloworld-rs</artifactId>
+    <version>25.0.0.Beta1-SNAPSHOT</version>
     <packaging>war</packaging>
+
     <name>Quickstart: helloworld-rs</name>
     <description>A simple Hello World project that uses JAX-RS</description>
 
@@ -41,24 +40,34 @@
         </license>
     </licenses>
 
-    <dependencies>
+    <properties>
+        <version.wildfly.server>24.0.0.Final</version.wildfly.server>
+        <version.wildfly-jar.maven.plugin>5.0.0.Final</version.wildfly-jar.maven.plugin>
+    </properties>
 
-        <!-- Import the CDI API, we use provided scope as the API is included in JBoss EAP -->
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.wildfly.bom</groupId>
+                <artifactId>wildfly-jakartaee8-with-tools</artifactId>
+                <version>${version.wildfly.server}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <dependencies>
         <dependency>
             <groupId>jakarta.enterprise</groupId>
             <artifactId>jakarta.enterprise.cdi-api</artifactId>
             <scope>provided</scope>
         </dependency>
-
-        <!-- Import the Common Annotations API (JSR-250), we use provided scope
-            as the API is included in JBoss EAP -->
         <dependency>
             <groupId>org.jboss.spec.javax.annotation</groupId>
             <artifactId>jboss-annotations-api_1.3_spec</artifactId>
             <scope>provided</scope>
         </dependency>
-
-        <!-- Import the JAX-RS API, we use provided scope as the API is included in JBoss EAP -->
         <dependency>
             <groupId>org.jboss.spec.javax.ws.rs</groupId>
             <artifactId>jboss-jaxrs-api_2.1_spec</artifactId>
@@ -66,6 +75,37 @@
         </dependency>
     </dependencies>
 
-  
-
+    <profiles>
+        <profile>
+            <id>bootable-jar</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.wildfly.plugins</groupId>
+                        <artifactId>wildfly-jar-maven-plugin</artifactId>
+                        <version>${version.wildfly-jar.maven.plugin}</version>
+                        <configuration>
+                            <feature-pack-location>wildfly@maven(org.jboss.universe:community-universe)</feature-pack-location>
+                            <layers>
+                                <layer>jaxrs-server</layer>
+                            </layers>
+                            <plugin-options>
+                                <jboss-fork-embedded>true</jboss-fork-embedded>
+                            </plugin-options>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>package</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>
