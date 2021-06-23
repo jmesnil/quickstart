@@ -1,7 +1,13 @@
 build:
   uri: https://github.com/jmesnil/quickstart.git
   ref: main-experiment
-  contextDir: helloword-rs
+  contextDir: helloworld-rs
   mode: bootable-jar
+  env:
+    - name: MAVEN_ARGS_APPEND
+        # Use the bootable-jar-openshift profile to ensure that the application
+        # can be deployed on OpenShift but disable JKube as the image will be
+        # built and deployed by this chart.
+        value: -Pbootable-jar-openshift -Djkube.skip=true
 deploy:
   replicas: 1
