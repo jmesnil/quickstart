@@ -1,7 +1,7 @@
 build:
   uri: https://github.com/jmesnil/quickstart.git
   ref: main-experiment
-  contextDir: helloworld-rs
+  contextDir: microprofile-config
   mode: bootable-jar
   env:
     # Use the bootable-jar-openshift profile to ensure that the application

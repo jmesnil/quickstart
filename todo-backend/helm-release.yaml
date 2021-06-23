@@ -1,0 +1,7 @@
+build:
+  uri: https://github.com/jmesnil/quickstart.git
+  ref: main-experiment
+  contextDir: todo-backend
+  mode: bootable-jar
+deploy:
+  replicas: 1
