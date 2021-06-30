@@ -42,7 +42,8 @@
     </licenses>
 
     <properties>
-        <version.wildfly.server>24.0.0.Final</version.wildfly.server>
+        <version.wildfly.bom>24.0.0.Final</version.wildfly.bom>
+        <version.wildfly.server>${version.wildfly.bom}</version.wildfly.server>
         <version.wildfly-jar.maven.plugin>6.0.0.Alpha1</version.wildfly-jar.maven.plugin>
         <version.jkube.maven.plugin>1.0.1</version.jkube.maven.plugin>
         <jkube.generator.from>registry.redhat.io/ubi8/openjdk-11:latest</jkube.generator.from>
@@ -53,7 +54,7 @@
             <dependency>
                 <groupId>org.wildfly.bom</groupId>
                 <artifactId>wildfly-jakartaee8-with-tools</artifactId>
-                <version>${version.wildfly.server}</version>
+                <version>${version.wildfly.bom}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
