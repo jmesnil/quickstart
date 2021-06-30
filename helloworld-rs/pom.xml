@@ -43,10 +43,9 @@
 
     <properties>
         <version.wildfly.server>24.0.0.Final</version.wildfly.server>
-        <version.wildfly-jar.maven.plugin>5.0.0.Final</version.wildfly-jar.maven.plugin>
+        <version.wildfly-jar.maven.plugin>6.0.0.Alpha1</version.wildfly-jar.maven.plugin>
         <version.jkube.maven.plugin>1.0.1</version.jkube.maven.plugin>
         <jkube.generator.from>registry.redhat.io/ubi8/openjdk-11:latest</jkube.generator.from>
-        <bootable-jar-cloud>false</bootable-jar-cloud>
     </properties>
 
     <dependencyManagement>
@@ -79,14 +78,45 @@
         </dependency>
     </dependencies>
 
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.wildfly.plugins</groupId>
+                <artifactId>wildfly-jar-maven-plugin</artifactId>
+                <version>${version.wildfly-jar.maven.plugin}</version>
+                <configuration>
+                    <feature-pack-location>wildfly@maven(org.jboss.universe:community-universe)#${version.wildfly.server}</feature-pack-location>
+                    <layers>
+                        <layer>jaxrs-server</layer>
+                    </layers>
+                    <plugin-options>
+                        <jboss-fork-embedded>true</jboss-fork-embedded>
+                    </plugin-options>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>package</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
     <profiles>
         <profile>
-            <id>openshift</id>
-            <properties>
-                <bootable-jar-cloud>true</bootable-jar-cloud>
-            </properties>
+            <id>bootable-jar-openshift</id>
             <build>
                 <plugins>
+                    <plugin>
+                        <groupId>org.wildfly.plugins</groupId>
+                        <artifactId>wildfly-jar-maven-plugin</artifactId>
+                        <version>${version.wildfly-jar.maven.plugin}</version>
+                        <configuration>
+                            <cloud />
+                        </configuration>
+                    </plugin>
                     <plugin>
                         <groupId>org.eclipse.jkube</groupId>
                         <artifactId>openshift-maven-plugin</artifactId>
@@ -113,10 +143,7 @@
             </build>
         </profile>
         <profile>
-            <id>bootable-jar</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
+            <id>server</id>
             <build>
                 <plugins>
                     <plugin>
@@ -124,24 +151,24 @@
                         <artifactId>wildfly-jar-maven-plugin</artifactId>
                         <version>${version.wildfly-jar.maven.plugin}</version>
                         <configuration>
-                            <feature-pack-location>wildfly@maven(org.jboss.universe:community-universe)#${version.wildfly.server}</feature-pack-location>
-                            <layers>
-                                <layer>jaxrs-server</layer>
-                            </layers>
-                            <plugin-options>
-                                <jboss-fork-embedded>true</jboss-fork-embedded>
-                            </plugin-options>
-                            <cloud>
-                                <enabled>${bootable-jar-cloud}</enabled>
-                            </cloud>
+                            <server />
                         </configuration>
-                        <executions>
-                            <execution>
-                                <goals>
-                                    <goal>package</goal>
-                                </goals>
-                            </execution>
-                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>cloud-server</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.wildfly.plugins</groupId>
+                        <artifactId>wildfly-jar-maven-plugin</artifactId>
+                        <version>${version.wildfly-jar.maven.plugin}</version>
+                        <configuration>
+                            <server />
+                            <cloud />
+                        </configuration>
                     </plugin>
                 </plugins>
             </build>

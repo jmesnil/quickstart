@@ -1,0 +1,16 @@
+build:
+  uri: https://github.com/jmesnil/quickstart.git
+  ref: main-experiment
+  contextDir: helloworld-rs
+  mode: s2i
+  s2i:
+    version: latest
+    builderImage: quay.io/jfdenise/wildfly-s2i-jdk11
+    runtimeImage: quay.io/jfdenise/wildfly-runtime-jre11
+  env:
+    # Use the cloud-server profile to ensure that the application
+    # is deployed on the Cloud in server mode.
+    - name: MAVEN_ARGS_APPEND
+      value: -Pcloud-server
+deploy:
+  replicas: 1
