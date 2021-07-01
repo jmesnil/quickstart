@@ -208,6 +208,27 @@
                             <cloud />
                         </configuration>
                     </plugin>
+                    <plugin>
+                        <groupId>io.fabric8</groupId>
+                        <artifactId>docker-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>build</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <images>
+                                <image>
+                                    <name>helloworld-rs</name>
+                                    <build>
+                                        <dockerFile>${project.basedir}/Dockerfile</dockerFile >
+                                    </build>
+                                </image>
+                            </images>
+                        </configuration>
+                    </plugin>
                 </plugins>
             </build>
         </profile>
