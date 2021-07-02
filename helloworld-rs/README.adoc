@@ -1,72 +1,104 @@
-include::../shared-doc/attributes.adoc[]
-
-= helloworld-rs: Helloworld Using JAX-RS (Java API for RESTful Web Services)
-:author: Gustavo A. Brey, Gaston Coco
+= helloworld-rs: Helloworld Using Jakarta API for RESTful Web Services
 :level: Intermediate
 :technologies: CDI, JAX-RS
-:openshift: true
+:toc: left
 
 [abstract]
 The `helloworld-rs` quickstart demonstrates a simple Hello World application, bundled and deployed as a WAR, that uses JAX-RS to say Hello.
 
-:standalone-server-type: default
-:archiveType: war
-
-== What is it?
+== Introduction
 
 The `helloworld-rs` quickstart demonstrates the use of CDI and JAX-RS in {productNameFull}.
 
-//*************************************************
-// Product Release content only
-//*************************************************
+== Package the Quickstart
 
-ifndef::EAPCDRelease[]
+[source]
+----
+mvn clean package
+----
 
-// System Requirements
-include::../shared-doc/system-requirements.adoc[leveloffset=+1]
+This create the `target/server` directory that contains the server and the WAR deployment in it.
 
-// Use of {jbossHomeName}
-include::../shared-doc/use-of-jboss-home-name.adoc[leveloffset=+1]
+== Start the Quickstart
 
-// Start the {productName} Standalone Server
-include::../shared-doc/start-the-standalone-server.adoc[leveloffset=+1]
+[source]
+----
+cd target/server
+./bin/standalone.sh
+----
 
-// Build and Deploy the Quickstart
-include::../shared-doc/build-and-deploy-the-quickstart.adoc[leveloffset=+1]
+You should see a message in the server log indicating that the archive deployed successfully.
 
+== Access the Quickstart
 
-== Access the Application
+The quickstart can be accessed from http://localhost:8080/:
+* The JSON content can be viewed by accessing the URL: http://localhost:8080/rest/json
+* The XML content can be viewed by accessing the URL: http://localhost:8080/rest/xml
 
-The application is deployed to http://localhost:8080/{artifactId}/.
+You can try to access the JSON content by running the command:
 
-* The _XML_ content can be viewed by accessing the following URL: http://localhost:8080/{artifactId}/rest/xml
+[source]
+----
+curl http://localhost:8080/rest/json
+----
 
-* The _JSON_ content can be viewed by accessing this URL: http://localhost:8080/{artifactId}/rest/json
+It will display the following output
 
-// Undeploy the Quickstart
-include::../shared-doc/undeploy-the-quickstart.adoc[leveloffset=+1]
-// Run the Quickstart in Red Hat CodeReady Studio or Eclipse
-include::../shared-doc/run-the-quickstart-in-jboss-developer-studio.adoc[leveloffset=+1]
-// Debug the Application
-include::../shared-doc/debug-the-application.adoc[leveloffset=+1]
+[source,json]
+----
+{"result":"Hello World!"}
+----
 
-endif::[]
+== Run the Integration Tests
 
-//*************************************************
-// Product Release content only
-//*************************************************
-ifdef::ProductRelease[]
+You can run integration tests on the quickstart using Arquillian tests by running the command:
 
-// Getting Started with OpenShift
-include::../shared-doc/openshift-getting-started.adoc[leveloffset=+1]
-//Prepare OpenShift for Quickstart Deployment
-include::../shared-doc/openshift-create-project.adoc[leveloffset=+1]
-// Import the Latest {xpaasproduct-shortname} Image Streams and Templates
-include::../shared-doc/openshift-import-imagestreams-templates.adoc[leveloffset=+1]
-// Deploy the {ProductShortName} Source-to-Image (S2I) Quickstart to OpenShift
-include::../shared-doc/openshift-deploy-project.adoc[leveloffset=+1]
-// Openshift post deployment tasks
-include::../shared-doc/openshift-post-deployment-tasks.adoc[leveloffset=+1]
+[source]
+----
+mvn clean verify
+----
 
+== Cloud Integration
 
-endif::[]
+=== Build the Application Image
+
+You can build a Docker application image that contains the server and the quickstart by running the command:
+
+[source]
+----
+mvn -Pcloud-server clean package docker:build
+----
+
+This will create a Docker image named `helloworld-rs`.
+
+[NOTE]
+====
+The `cloud-server` Maven profile is activated to prepare the server for cloud deployment.
+====
+
+=== Run the Application Image
+
+You can run the application image by executing the command:
+
+[source]
+----
+docker run -p8080:8080 helloworld-rs
+----
+
+=== Access the Quickstart from the Application Image
+
+The quickstart can be accessed from http://localhost:8080/:
+
+You can try to access the JSON content by running the command:
+
+[source]
+----
+curl http://localhost:8080/rest/json
+----
+
+It will display the following output
+
+[source,json]
+----
+{"result":"Hello World!"}
+----
