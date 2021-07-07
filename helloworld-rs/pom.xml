@@ -45,6 +45,7 @@
         <version.wildfly.bom>24.0.0.Final</version.wildfly.bom>
         <version.wildfly.server>${version.wildfly.bom}</version.wildfly.server>
         <version.wildfly-jar.maven.plugin>6.0.0.Alpha1</version.wildfly-jar.maven.plugin>
+        <version.docker.maven.plugin>0.36.1</version.docker.maven.plugin>
     </properties>
 
     <dependencyManagement>
@@ -156,6 +157,7 @@
                     <plugin>
                         <groupId>io.fabric8</groupId>
                         <artifactId>docker-maven-plugin</artifactId>
+                        <version>${version.docker.maven.plugin}</version>
                         <executions>
                             <execution>
                                 <goals>
@@ -166,7 +168,7 @@
                         <configuration>
                             <images>
                                 <image>
-                                    <name>helloworld-rs</name>
+                                    <name>${project.artifactId}</name>
                                     <build>
                                         <dockerFile>${project.basedir}/Dockerfile</dockerFile >
                                     </build>
